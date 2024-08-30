@@ -123,10 +123,9 @@ public class NoParentException : InMemoryFileSystemException
 {
     public string DirectoryName { get; private set; }
 
-    public NoParentException(string dirName) : base($"Directory '{dirName}' does not have a parent directory")
-    {
-        DirectoryName = dirName;
-    }
+    public NoParentException(string dirName)
+        : base($"Directory '{dirName}' does not have a parent directory")
+        => DirectoryName = dirName;
 }
 
 public class DirectoryAlreadyExistsException : InMemoryFileSystemException
@@ -134,7 +133,9 @@ public class DirectoryAlreadyExistsException : InMemoryFileSystemException
     public Directory ParentDirectory { get; private set; }
     public string DirectoryName { get; private set; }
 
-    public DirectoryAlreadyExistsException(string dirName, Directory parentDirectory) : base($"Directory '{dirName}' already exists in '{parentDirectory.Name}'") => (DirectoryName, ParentDirectory) = (dirName, parentDirectory);
+    public DirectoryAlreadyExistsException(string dirName, Directory parentDirectory)
+        : base($"Directory '{dirName}' already exists in '{parentDirectory.Name}'")
+        => (DirectoryName, ParentDirectory) = (dirName, parentDirectory);
 }
 
 public class FileAlreadyExistsException : InMemoryFileSystemException
@@ -142,5 +143,7 @@ public class FileAlreadyExistsException : InMemoryFileSystemException
     public Directory ParentDirectory { get; private set; }
     public string FileName { get; private set; }
 
-    public FileAlreadyExistsException(string fileName, Directory parentDirectory) : base($"File '{fileName}' already exists in '{parentDirectory.Name}'") => (FileName, ParentDirectory) = (fileName, parentDirectory);
+    public FileAlreadyExistsException(string fileName, Directory parentDirectory)
+        : base($"File '{fileName}' already exists in '{parentDirectory.Name}'")
+        => (FileName, ParentDirectory) = (fileName, parentDirectory);
 }
