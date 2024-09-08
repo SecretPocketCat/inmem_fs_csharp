@@ -11,16 +11,29 @@ namespace BasicFileSystem;
 // 1. creation of the FS in main
 // 2. iterate over the FS
 
-public class Directory
+public static class InMemoryPath
 {
     // use custom delimiter instead of `Path.DirectorySeparatorChar` to keep it the same on all platforms
     // same goes for use of Path.Combine
-    public const string Delimiter = "/";
+    public const char Delimiter = '/';
 
+    public static string Combine(params string[] parts)
+    {
+        if (parts.Length > 1 && parts[0] == Delimiter.ToString())
+        {
+            parts[0] = string.Empty;
+        }
+
+        return string.Join(Delimiter, parts);
+    }
+}
+
+public class Directory
+{
     Files _files = new();
     Directories _childDirs = new();
 
-    private Directory() => Name = Delimiter;
+    private Directory() => Name = InMemoryPath.Delimiter.ToString();
     public Directory(string name, Directory parentDirectory) => (Name, MaybeParentDirectory) = (name, parentDirectory);
 
     public static Directory CreateRoot() => new();
@@ -29,7 +42,7 @@ public class Directory
     public Directory? MaybeParentDirectory { get; private set; }
     public Directory ParentDirectory => MaybeParentDirectory ?? throw new NoParentException(Name);
     public bool IsRoot => MaybeParentDirectory is null;
-    public string Path => string.Join(Delimiter, Parents().Select(d => d.IsRoot ? string.Empty : d.Name).Reverse().Concat([Name]));
+    public string Path => IsRoot ? Name : InMemoryPath.Combine(ParentDirectory.Path, Name);
 
     public IEnumerable<Directory> Parents()
     {
@@ -97,7 +110,7 @@ public class Directory
 
 public record File(string Name, string Contents, Directory ParentDirectory)
 {
-    public string Path => ParentDirectory.Path + (ParentDirectory.IsRoot ? Name : $"{Directory.Delimiter}{Name}");
+    public string Path => InMemoryPath.Combine(ParentDirectory.Path, Name);
 }
 
 public record FileSystemEntry
