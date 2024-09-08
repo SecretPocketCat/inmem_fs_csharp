@@ -108,7 +108,7 @@ public record FileSystemEntry
     public FileSystemEntry(File file) => File = file;
 }
 
-class Files : KeyedCollection<string, File>
+public class Files : KeyedCollection<string, File>
 {
     protected override string GetKeyForItem(File file) => file.Name;
 }
