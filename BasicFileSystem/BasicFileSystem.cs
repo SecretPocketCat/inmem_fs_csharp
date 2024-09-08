@@ -13,6 +13,8 @@ namespace BasicFileSystem;
 
 public class Directory
 {
+    // use custom delimiter instead of `Path.DirectorySeparatorChar` to keep it the same on all platforms
+    // same goes for use of Path.Combine
     public const string Delimiter = "/";
 
     Files _files = new();
