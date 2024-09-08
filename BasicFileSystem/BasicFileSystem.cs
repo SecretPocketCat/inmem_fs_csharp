@@ -13,10 +13,12 @@ namespace BasicFileSystem;
 
 public class Directory
 {
+    public const string Delimiter = "/";
+
     Files _files = new();
     Directories _childDirs = new();
 
-    private Directory() => Name = "/";
+    private Directory() => Name = Delimiter;
     public Directory(string name, Directory parentDirectory) => (Name, MaybeParentDirectory) = (name, parentDirectory);
 
     public static Directory CreateRoot() => new();
@@ -25,7 +27,7 @@ public class Directory
     public Directory? MaybeParentDirectory { get; private set; }
     public Directory ParentDirectory => MaybeParentDirectory ?? throw new NoParentException(Name);
     public bool IsRoot => MaybeParentDirectory is null;
-    public string Path => string.Join("/", Parents().Select(d => d.IsRoot ? string.Empty : d.Name).Reverse().Concat([Name]));
+    public string Path => string.Join(Delimiter, Parents().Select(d => d.IsRoot ? string.Empty : d.Name).Reverse().Concat([Name]));
 
     public IEnumerable<Directory> Parents()
     {
@@ -91,9 +93,9 @@ public class Directory
     }
 }
 
-public record File(string name, string contents, Directory parentDirectory)
+public record File(string Name, string Contents, Directory ParentDirectory)
 {
-    public string Path => parentDirectory.Path + (parentDirectory.IsRoot ? name : $"/{name}");
+    public string Path => ParentDirectory.Path + (ParentDirectory.IsRoot ? Name : $"{Directory.Delimiter}{Name}");
 }
 
 public record FileSystemEntry
@@ -106,7 +108,7 @@ public record FileSystemEntry
 
 class Files : KeyedCollection<string, File>
 {
-    protected override string GetKeyForItem(File file) => file.name;
+    protected override string GetKeyForItem(File file) => file.Name;
 }
 
 public class Directories : KeyedCollection<string, Directory>
